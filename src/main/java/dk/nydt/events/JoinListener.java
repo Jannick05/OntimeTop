@@ -23,7 +23,6 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onPlayer(PlayerJoinEvent event) {
         Player p = event.getPlayer();
-        Bukkit.broadcastMessage(p + "joined");
         if (!TimeUtils.hasAccount(p)) {
             TimeUtils.createAccount(p);
         } else {
