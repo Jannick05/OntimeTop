@@ -17,12 +17,25 @@ import java.io.File;
 public final class Main extends JavaPlugin {
     public static Main instance;
     private static PluginManager pluginManager;
-    public static Config ontime, config;
-    public static FileConfiguration ontimeYML, configYML;
+    private boolean access = false;
+    public static Config ontime, config, license;
+    public static FileConfiguration ontimeYML, configYML, licenseYML;
     @Override
     public void onEnable() {
         pluginManager = getServer().getPluginManager();
         instance = this;
+
+        //config yml
+        if (!(new File(getDataFolder(), "license.yml")).exists())
+            saveResource("license.yml", false);
+
+        license = new Config(this, null, "license.yml");
+        licenseYML = license.getConfig();
+
+        String license = licenseYML.getString("License");
+        if(!new AdvancedLicense(license, "http://217.76.62.255:3000/verify.php", this).debug().register()) return;
+        //if(!new AdvancedLicense(license, "http://217.76.62.255:3000/verify.php", this).register()) return;
+        access = true;
 
         //register commands
         getCommand("Ontime").setExecutor(new Ontime());
@@ -37,9 +50,6 @@ public final class Main extends JavaPlugin {
         if (!(new File(getDataFolder(), "ontime.yml")).exists())
             saveResource("ontime.yml", false);
 
-        ontime = new Config(this, null, "ontime.yml");
-        ontimeYML = ontime.getConfig();
-
         //config yml
         if (!(new File(getDataFolder(), "config.yml")).exists())
             saveResource("config.yml", false);
@@ -47,6 +57,8 @@ public final class Main extends JavaPlugin {
         config = new Config(this, null, "config.yml");
         configYML = config.getConfig();
 
+        ontime = new Config(this, null, "ontime.yml");
+        ontimeYML = ontime.getConfig();
         //updates on time every 10 minutes
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new TimeUpdate(), 0L, 12000L);
 
@@ -55,8 +67,12 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        ontime.saveConfig();
-        config.saveConfig();
+        if (access) {
+            config.saveConfig();
+            ontime.saveConfig();
+            license.saveConfig();
+        }
+        license.saveConfig();
     }
 
     public static Main getInstance(){
