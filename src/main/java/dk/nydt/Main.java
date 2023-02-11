@@ -33,8 +33,7 @@ public final class Main extends JavaPlugin {
         licenseYML = license.getConfig();
 
         String license = licenseYML.getString("License");
-        if(!new AdvancedLicense(license, "http://217.76.62.255:3000/verify.php", this).debug().register()) return;
-        //if(!new AdvancedLicense(license, "http://217.76.62.255:3000/verify.php", this).register()) return;
+        if(!new AdvancedLicense(license, "http://license.cutekat.dk/verify.php", this).debug().register()) return;
         access = true;
 
         //register commands
