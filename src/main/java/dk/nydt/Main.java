@@ -25,7 +25,7 @@ public final class Main extends JavaPlugin {
         pluginManager = getServer().getPluginManager();
         instance = this;
 
-        //config yml
+        //license yml
         if (!(new File(getDataFolder(), "license.yml")).exists())
             saveResource("license.yml", false);
 
